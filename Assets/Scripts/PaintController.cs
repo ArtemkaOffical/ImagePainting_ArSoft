@@ -89,6 +89,12 @@ public class PaintController : MonoBehaviour
         System.IO.File.WriteAllBytes(path, bytes);
     }
 
+    private void OnDestroy()
+    {
+        SaveTexture(@"C:\\test.png");
+        Debug.Log(@"File saved to C:\\test.png");
+    }
+
     private void DrawOnTexture(Vector2 start, Vector2 end)
     {
         int width = texture.width;

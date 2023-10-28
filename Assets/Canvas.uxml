@@ -1,5 +1,5 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
     <ui:VisualElement style="height: 100%; width: 100%; align-items: center; justify-content: center;">
-        <ui:VisualElement name="PaintingContainer" style="width: 50%; height: 50%;" />
+        <ui:VisualElement name="PaintingContainer" style="width: 50%; height: 50%; min-width: auto; min-height: auto;" />
     </ui:VisualElement>
 </ui:UXML>

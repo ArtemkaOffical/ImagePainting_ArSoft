@@ -152,9 +152,9 @@ Library: lib_burst_generated
 --root-assembly=D:\UnityProjects\ImagePainting_ArSoft\Temp\StagingArea\Data\Managed\Unity.Services.Core.Threading.dll
 --root-assembly=D:\UnityProjects\ImagePainting_ArSoft\Temp\StagingArea\Data\Managed\Unity.2D.Tilemap.Extras.dll
 --root-assembly=D:\UnityProjects\ImagePainting_ArSoft\Temp\StagingArea\Data\Managed\Unity.Services.Core.Networking.dll
+--root-assembly=D:\UnityProjects\ImagePainting_ArSoft\Temp\StagingArea\Data\Managed\Assembly-CSharp.dll
 --root-assembly=D:\UnityProjects\ImagePainting_ArSoft\Temp\StagingArea\Data\Managed\NativeCamera.Runtime.dll
 --root-assembly=D:\UnityProjects\ImagePainting_ArSoft\Temp\StagingArea\Data\Managed\Unity.InternalAPIEngineBridge.001.dll
---root-assembly=D:\UnityProjects\ImagePainting_ArSoft\Temp\StagingArea\Data\Managed\Assembly-CSharp.dll
 --root-assembly=D:\UnityProjects\ImagePainting_ArSoft\Temp\StagingArea\Data\Managed\Unity.Services.Core.Configuration.dll
 --assembly-folder=D:\UnityProjects\ImagePainting_ArSoft\Temp\StagingArea\Data\Managed\
 --pdb-search-paths=Temp/ManagedSymbols/

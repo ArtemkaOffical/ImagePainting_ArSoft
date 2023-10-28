@@ -7,7 +7,7 @@ namespace ImagePainting
     [Serializable]
     public class Brush
     {
-        [field:SerializeField] public int Size { get; private set; } = 10;
+        [field:SerializeField,Range(1,15)] public int Size { get; private set; } = 10;
         [field:SerializeField] public Color Color { get; private set; } = Color.red;
 
         public void SetColor(Color color)

@@ -1,4 +1,3 @@
-using System;
 using ImagePainting;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -8,7 +7,7 @@ public class PaintController : MonoBehaviour
     [SerializeField] private UIDocument _canvas;
     [SerializeField] private Texture2D texture;
     [SerializeField] private Brush _brush;
-    
+
     private VisualElement _paintingContainer;
     private Vector2? _previousPoint = null;
     private bool _isDrawing = false;
@@ -50,6 +49,10 @@ public class PaintController : MonoBehaviour
 
             texture = NativeCamera.LoadImageAtPath(path, markTextureNonReadable: false);
             paintingContainer.style.backgroundImage = texture;
+            paintingContainer.style.width = texture.width;
+            paintingContainer.style.height = texture.height;
+            paintingContainer.transform.scale = new Vector3(0.5f, 0.5f, 1);
+
         });
     }
 
@@ -69,16 +72,35 @@ public class PaintController : MonoBehaviour
     {
         if (!_isDrawing) return;
 
-        Vector2 localPosition = _paintingContainer.WorldToLocal(eventData.position);
-        localPosition.x /= _paintingContainer.resolvedStyle.width;
+        Vector2 localPosition = eventData.localPosition;
+
         localPosition.y /= _paintingContainer.resolvedStyle.height;
-        localPosition.x *= texture.width;
         localPosition.y *= texture.height;
 
-        if (_previousPoint.HasValue)
-            DrawOnTexture(_previousPoint.Value, localPosition);
+        if (!_previousPoint.HasValue)
+            DrawOnTexture(localPosition);
+        else
+            FillBetweenPoints(_previousPoint.Value, localPosition);
 
         _previousPoint = localPosition;
+        ApplyNewTexture();
+    }
+    
+    private void ApplyNewTexture() => texture.Apply();
+    
+    private void FillBetweenPoints(Vector2 start, Vector2 end)
+    {
+        float distance = Vector2.Distance(start, end);
+
+        Vector2 currentPosition = end;
+
+        float steps = 1 / distance;
+
+        for (float lerp = 0; lerp <= 1; lerp += steps)
+        {
+            currentPosition = Vector2.Lerp(start, end, lerp);
+            DrawOnTexture(currentPosition);
+        }
     }
 
     private void SaveTexture(string path)
@@ -95,15 +117,13 @@ public class PaintController : MonoBehaviour
         Debug.Log(@"File saved to C:\\test.png");
     }
 
-    private void DrawOnTexture(Vector2 start, Vector2 end)
+    private void DrawOnTexture(Vector2 start)
     {
         int width = texture.width;
         int height = texture.height;
 
         int x0 = (int)start.x;
         int y0 = (int)start.y;
-        int x1 = (int)end.x;
-        int y1 = (int)end.y;
 
         for (int x = Mathf.Max(0, x0 - _brush.Size); x < Mathf.Min(width, x0 + _brush.Size); x++)
         {
@@ -114,12 +134,11 @@ public class PaintController : MonoBehaviour
                 if (_brush.IsWithinBrushArea(x, transformedY, x0, height - y0 - 1))
                 {
                     Color pixelColor = texture.GetPixel(x, transformedY);
-                    Color newColor = Color.Lerp(pixelColor, _brush.Color, 10f);
+                    Color newColor = Color.Lerp(pixelColor, _brush.Color, _brush.Size);
                     texture.SetPixel(x, transformedY, newColor);
                 }
             }
         }
 
-        texture.Apply();
     }
 }

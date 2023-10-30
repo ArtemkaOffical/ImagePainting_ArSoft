@@ -72,17 +72,12 @@ public class PaintController : MonoBehaviour
     {
         if (!_isDrawing) return;
 
-        Vector2 localPosition = eventData.localPosition;
-
-        localPosition.y /= _paintingContainer.resolvedStyle.height;
-        localPosition.y *= texture.height;
-
         if (!_previousPoint.HasValue)
-            DrawOnTexture(localPosition);
+            DrawOnTexture(eventData.localPosition);
         else
-            FillBetweenPoints(_previousPoint.Value, localPosition);
+            FillBetweenPoints(_previousPoint.Value, eventData.localPosition);
 
-        _previousPoint = localPosition;
+        _previousPoint = eventData.localPosition;
         ApplyNewTexture();
     }
     

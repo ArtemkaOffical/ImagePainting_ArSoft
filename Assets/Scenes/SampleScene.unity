@@ -387,6 +387,7 @@ GameObject:
   - component: {fileID: 1666092759}
   - component: {fileID: 1666092758}
   - component: {fileID: 1666092757}
+  - component: {fileID: 1666092760}
   m_Layer: 0
   m_Name: GameObject
   m_TagString: Untagged
@@ -423,7 +424,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _canvas: {fileID: 1666092757}
-  texture: {fileID: 0}
+  _visualElementTextureCreator: {fileID: 0}
   _brush:
     <Size>k__BackingField: 10
     <Color>k__BackingField: {r: 1, g: 0, b: 0, a: 1}
@@ -442,3 +443,16 @@ Transform:
   m_Father: {fileID: 273444010}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1666092760
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1666092756}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c2c71782c4540e0be4a7ee5f796d936, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _elementPanelSettings: {fileID: 11400000, guid: 0ba9132432230bd4f9caa43da76f5e32, type: 2}

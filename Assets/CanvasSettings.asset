@@ -18,12 +18,12 @@ MonoBehaviour:
   m_Scale: 1
   m_ReferenceDpi: 96
   m_FallbackDpi: 96
-  m_ReferenceResolution: {x: 1200, y: 800}
+  m_ReferenceResolution: {x: 271, y: 68}
   m_ScreenMatchMode: 0
   m_Match: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
-  m_ClearDepthStencil: 1
+  m_ClearDepthStencil: 0
   m_ClearColor: 1
   m_ColorClearValue: {r: 1, g: 1, b: 1, a: 1}
   m_DynamicAtlasSettings:

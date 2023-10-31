@@ -1,28 +1,47 @@
+using System;
+using System.Collections;
+using System.Threading;
+using System.Threading.Tasks;
 using ImagePainting;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UIElements;
+using Task = UnityEditor.VersionControl.Task;
 
+[RequireComponent(typeof(VisualElementTextureCreator))]
 public class PaintController : MonoBehaviour
 {
     [SerializeField] private UIDocument _canvas;
-    [SerializeField] private Texture2D texture;
+    [SerializeField] private VisualElementTextureCreator _visualElementTextureCreator;
     [SerializeField] private Brush _brush;
-
+    
     private VisualElement _paintingContainer;
     private Vector2? _previousPoint = null;
     private bool _isDrawing = false;
-
+    private Texture2D _baseTexture;
+    private Texture2D _savedTexture;
+    
     private void Awake()
     {
         _brush = new Brush();
         _paintingContainer = _canvas.rootVisualElement.Q("PaintingContainer");
+        _visualElementTextureCreator = GetComponent<VisualElementTextureCreator>();
     }
 
     private void Start()
     {
         LoadAndSetTextureOnContainer(_paintingContainer);
     }
-
+   
+    private void Update()
+    {
+        if (Input.GetKeyUp(KeyCode.A))
+        {  
+            //Print path for test save
+           SaveTexture(@"");
+        }
+    }
+    
     private void OnDisable()
     {
         _paintingContainer.UnregisterCallback<PointerMoveEvent>(OnPointerMove);
@@ -47,15 +66,16 @@ public class PaintController : MonoBehaviour
                 return;
             }
 
-            texture = NativeCamera.LoadImageAtPath(path, markTextureNonReadable: false);
-            paintingContainer.style.backgroundImage = texture;
-            paintingContainer.style.width = texture.width;
-            paintingContainer.style.height = texture.height;
-            paintingContainer.transform.scale = new Vector3(0.5f, 0.5f, 1);
+            _baseTexture = NativeCamera.LoadImageAtPath(path, markTextureNonReadable: false);
+            paintingContainer.style.backgroundImage = _baseTexture;
+            paintingContainer.style.width = _baseTexture.width;
+            paintingContainer.style.height = _baseTexture.height;
+            paintingContainer.transform.scale = new Vector3(0.1f, 0.1f, 1);
+            SetDateMarkUp();
 
         });
     }
-
+    
     private void OnPointerUp(PointerUpEvent eventData)
     {
         _isDrawing = false;
@@ -81,7 +101,7 @@ public class PaintController : MonoBehaviour
         ApplyNewTexture();
     }
     
-    private void ApplyNewTexture() => texture.Apply();
+    private void ApplyNewTexture() => _baseTexture.Apply();
     
     private void FillBetweenPoints(Vector2 start, Vector2 end)
     {
@@ -100,22 +120,27 @@ public class PaintController : MonoBehaviour
 
     private void SaveTexture(string path)
     {
-        if (texture == null) return;
-
-        byte[] bytes = texture.EncodeToPNG();
-        System.IO.File.WriteAllBytes(path, bytes);
+        if (_baseTexture == null) return;
+        
+        VisualElement dateMarkUp = _paintingContainer.Q("DateMarkUp");
+        StartCoroutine(_visualElementTextureCreator.Create(dateMarkUp, (textureByElement) =>
+        {
+            _savedTexture = _baseTexture.AddWatermark(textureByElement);
+            byte[] bytes = _savedTexture.EncodeToPNG();
+            System.IO.File.WriteAllBytes(path, bytes);
+        }));
     }
 
-    private void OnDestroy()
+    private void SetDateMarkUp(string date = null)
     {
-        SaveTexture(@"C:\\test.png");
-        Debug.Log(@"File saved to C:\\test.png");
+        Label dateMarkUp = _paintingContainer.Q<Label>("DateMarkUp");
+        dateMarkUp.text = date ?? DateTime.Now.ToShortDateString();
     }
-
+  
     private void DrawOnTexture(Vector2 start)
     {
-        int width = texture.width;
-        int height = texture.height;
+        int width = _baseTexture.width;
+        int height = _baseTexture.height;
 
         int x0 = (int)start.x;
         int y0 = (int)start.y;
@@ -128,9 +153,9 @@ public class PaintController : MonoBehaviour
 
                 if (_brush.IsWithinBrushArea(x, transformedY, x0, height - y0 - 1))
                 {
-                    Color pixelColor = texture.GetPixel(x, transformedY);
+                    Color pixelColor = _baseTexture.GetPixel(x, transformedY);
                     Color newColor = Color.Lerp(pixelColor, _brush.Color, _brush.Size);
-                    texture.SetPixel(x, transformedY, newColor);
+                    _baseTexture.SetPixel(x, transformedY, newColor);
                 }
             }
         }

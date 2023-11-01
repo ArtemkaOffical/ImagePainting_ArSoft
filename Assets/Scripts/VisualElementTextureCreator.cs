@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections;
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UIElements;
-using Object = UnityEngine.Object;
 
 namespace ImagePainting
 {
@@ -41,7 +39,7 @@ namespace ImagePainting
             yield return null;
             // Clean up the object we created and release the RenderTexture
             // (RenderTextures are not garbage collected objects).
-            Object.DestroyImmediate(obj);
+            UnityEngine.Object.DestroyImmediate(obj);
             rt.Release();
             // Restore the existing parent of the element, and invoke
             // any completion action specified.
